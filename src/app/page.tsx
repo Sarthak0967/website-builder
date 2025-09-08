@@ -1,19 +1,23 @@
-// "use client"
-// import { useTRPC } from "@/trpc/client";
-// import { useQuery } from "@tanstack/react-query";
-// import Image from "next/image";
+"use client"
+import { Button } from "@/components/ui/button";
+import { useTRPC } from "@/trpc/client";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 
-import { caller } from "@/trpc/server";
+export default function Home() {
 
-export default async function Home() {
-  // const trpc = useTRPC();
-
-  const data = await caller.hello({ text: "Sarthak"});
+  const trpc = useTRPC();
+  const invoke = useMutation(trpc.invoke.mutationOptions({
+    onSuccess: () => {
+      toast.success("Background job Started")
+    }
+  }))
   
-  // const { data } = useQuery(trpc.hello.queryOptions({ text: "Sarthak"}));
   return (
       <div>
-        {JSON.stringify(data)}
+        <Button disabled={invoke.isPending} onClick={() => invoke.mutate({ name: "Sarthak"})}>
+          Invoke Background Jobs
+        </Button>
       </div>
   );
 }
